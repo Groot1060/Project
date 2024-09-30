@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('admin.jpg'); 
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-position: center; 
+            color: #333; 
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background for better contrast */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h3 {
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        .cctv-section {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .cctv-camera {
+            width: 45%;
+            margin: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .cctv-camera video {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Dashboard</h2>
+
+        <!-- Admin Profile Section -->
+        <div class="section" id="admin-profile">
+            <h3>Admin Profile</h3>
+            <p><strong>Admin Name:</strong> John Admin</p>
+            <p><strong>Email:</strong> admin@school.com</p>
+        </div>
+
+        <!-- Registered Student Data Section -->
+        <div class="section" id="student-data">
+            <h3>Registered Students</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>ERP ID</th>
+                        <th>Date of Birth</th>
+                        <th>Mobile Number</th>
+                        <th>Photos</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of a registered student -->
+                    <tr>
+                        <td>John Doe</td>
+                        <td>12345</td>
+                        <td>01/01/2000</td>
+                        <td>9876543210</td>
+                        <td><img src="path/to/student_photo.jpg" alt="Student Photo" width="50"></td>
+                        <td>90%</td>
+                    </tr>
+                    <!-- Additional student data rows go here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CCTV Camera Access Section -->
+        <div class="section" id="cctv-access">
+            <h3>CCTV Camera Access</h3>
+            <div class="cctv-section">
+                <div class="cctv-camera">
+                    <h4>Camera 1</h4>
+                    <video controls>
+                        <source src="path/to/cctv_feed_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="cctv-camera">
+                    <h4>Camera 2</h4>
+                    <video controls>
+                        <source src="path/to/cctv_feed_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <!-- More cameras can be added here -->
+            </div>
+        </div>
+
+        <!-- Student Attendance Section -->
+        <div class="section" id="student-attendance">
+            <h3>Student Attendance</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>ERP ID</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example of attendance data -->
+                    <tr>
+                        <td>John Doe</td>
+                        <td>12345</td>
+                        <td>2024-09-28</td>
+                        <td>Present</td>
+                    </tr>
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>67890</td>
+                        <td>2024-09-28</td>
+                        <td>Absent</td>
+                    </tr>
+                    <!-- Additional attendance rows go here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bullying Activity Detection Section -->
+        <div class="section" id="bully-activity">
+            <h3>Bullying Activity Detection</h3>
+            <p>No bullying activity detected in the last 24 hours.</p>
+            <!-- Button to refresh CCTV footage for bully detection -->
+            <button class="btn" onclick="refreshBullyActivity()">Refresh</button>
+        </div>
+    </div>
+
+    <script>
+        function refreshBullyActivity() {
+            // Code to refresh CCTV footage and update bully activity status
+            alert('Bully activity check refreshed');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('profile.jpeg'); 
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat; 
+            height: 100vh; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .profile-section img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .profile-section p {
+            font-size: 18px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .attendance-table th, .attendance-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .attendance-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student Profile</h2>
+        <div class="profile-section">
+            <img src="IMG_20240924_081050613_HDR_PORTRAIT.jpg" alt="Profile Photo" id="profilePhoto">
+            <p><strong>Full Name:</strong> <span id="fullName">Vishal Jadhav</span></p>
+            <p><strong>Date of Birth:</strong> <span id="dob">16/07/2003</span></p>
+            <p><strong>ERP ID:</strong> <span id="erpId">1234567890</span></p>
+        </div>
+        <h3>Attendance</h3>
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTable">
+                <tr>
+                    <td>2024-09-25</td>
+                    <td>Present</td>
+                </tr>
+                <tr>
+                    <td>2024-09-26</td>
+                    <td>Absent</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Simulate retrieving student data from backend
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+
+        if (username === 'student1') {
+            document.getElementById('fullName').innerText = 'John Doe';
+            document.getElementById('dob').innerText = '01/01/2000';
+            document.getElementById('erpId').innerText = '1234567890';
+            document.getElementById('profilePhoto').src = 'images/student1.jpg';  // Example student image
+        }
+    </script>
+</body>
+</html>
+

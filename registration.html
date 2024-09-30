@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - AI Monitoring System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('register.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: rgba(0, 123, 255, 0.3);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: rgba(0, 86, 179, 0.8);
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #888;
+        }
+
+        #video {
+            display: none; /* Initially hide the video element */
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #photos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .photo {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 2px solid #fff;
+            overflow: hidden;
+        }
+
+        .photo img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Timer Styles */
+        .timer {
+            font-size: 18px;
+            margin-top: 10px;
+            color: red;
+        }
+
+        /* Progress Bar Styles */
+        .progress-bar {
+            margin-top: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 10px;
+            width: 100%;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0;
+            transition: width 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>Registration</h1>
+        <form id="registrationForm" onsubmit="return registerUser(event)">
+            <input type="text" id="fullName" placeholder="Full Name" required>
+            <input type="date" id="dob" placeholder="Date of Birth" required>
+            <input type="tel" id="mobile" placeholder="Mobile Number" required>
+            <input type="text" id="erpId" placeholder="ERP ID" required>
+            <input type="password" id="password" placeholder="Set Password" required>
+            
+            <button type="button" id="capturePhotos" class="button">Capture Photos</button>
+            <div id="photos"></div>
+            
+            <button type="button" id="recordVideo" class="button">Record Video</button>
+            <div id="timer" class="timer"></div>
+            <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+            <video id="video" controls></video>
+
+            <button type="submit" class="button">Register</button>
+        </form>
+        <div class="footer">
+            <p>&copy; 2024 AI Monitoring System</p>
+        </div>
+    </div>
+
+    <script>
+        let photoCount = 0;
+        const maxPhotos = 5;
+        const videoDuration = 120; // 2 minutes in seconds
+        let mediaRecorder;
+        let recordedChunks = [];
+        let interval;
+        let progressBarInterval;
+        
+        document.getElementById('capturePhotos').onclick = async () => {
+            if (photoCount < maxPhotos) {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                setTimeout(async () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 640;
+                    canvas.height = 480;
+                    const context = canvas.getContext('2d');
+
+                    // Capture photo after 3 seconds
+                    setTimeout(() => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const photoData = canvas.toDataURL('image/png');
+                        displayPhoto(photoData);
+                        photoCount++;
+
+                        // Stop video stream after capturing
+                        stream.getTracks().forEach(track => track.stop());
+                    }, 3000);
+                }, 1000);
+            } else {
+                alert("Maximum 5 photos captured.");
+            }
+        };
+
+        document.getElementById('recordVideo').onclick = async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            mediaRecorder.ondataavailable = (event) => {
+                recordedChunks.push(event.data);
+            };
+
+            let elapsed = 0;
+            document.getElementById('timer').textContent = '00:00';
+            interval = setInterval(() => {
+                elapsed++;
+                document.getElementById('timer').textContent = formatTime(elapsed);
+                if (elapsed >= videoDuration) {
+                    stopRecording(stream);
+                }
+            }, 1000);
+
+            // Progress bar logic
+            let progress = 0;
+            const progressBarFill = document.querySelector('.progress-bar-fill');
+            progressBarInterval = setInterval(() => {
+                progress += (100 / videoDuration);
+                progressBarFill.style.width = progress + '%';
+            }, 1000);
+
+            setTimeout(() => {
+                stopRecording(stream);
+            }, videoDuration * 100); // Convert seconds to milliseconds
+        };
+
+        function stopRecording(stream) {
+            clearInterval(interval);
+            clearInterval(progressBarInterval);
+            mediaRecorder.stop();
+            stream.getTracks().forEach(track => track.stop());
+            mediaRecorder.onstop = () => {
+                const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                const videoElement = document.getElementById('video');
+                videoElement.src = videoUrl;
+                videoElement.style.display = 'block';
+                recordedChunks = [];
+            };
+        }
+
+        function formatTime(seconds) {
+            const min = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const sec = String(seconds % 60).padStart(2, '0');
+            return `${min}:${sec}`;
+        }
+
+        function displayPhoto(photoData) {
+            const photosContainer = document.getElementById('photos');
+            const photoDiv = document.createElement('div');
+            photoDiv.className = 'photo';
+            const img = document.createElement('img');
+            img.src = photoData;
+            photoDiv.appendChild(img);
+            photosContainer.appendChild(photoDiv);
+        }
+
+        function registerUser(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            
+            const fullName = document.getElementById('fullName').value;
+            const dob = document.getElementById('dob').value;
+            const mobile = document.getElementById('mobile').value;
+            const erpId = document.getElementById('erpId').value;
+            const password = document.getElementById('password').value;
+
+            // Collect photo data
+            const photos = Array.from(document.querySelectorAll('.photo img')).map(img => img.src);
+            const videoElement = document.getElementById('video');
+
+            const registrationData = {
+                fullName: fullName,
+                dob: dob,
+                mobile: mobile,
+                erpId: erpId,
+                password: password,
+                photos: photos,
+                video: videoElement.src,
+            };
+            console.log('Registration Data:', registrationData);
+            alert('Registration successful!');
+
+            // Here you can add logic to save the data to the server
+        }
+    </script>
+</body>
+</html>
